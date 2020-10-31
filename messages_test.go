@@ -8,10 +8,10 @@ import (
 	"github.com/issue9/assert"
 )
 
-func TestErrors(t *testing.T) {
+func TestMessages(t *testing.T) {
 	a := assert.New(t)
 
-	errs := Errors{}
+	errs := Messages{}
 
 	a.Panic(func() {
 		errs.Add("key")

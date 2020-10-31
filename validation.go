@@ -16,21 +16,21 @@ type ErrorHandling int8
 // Validation 验证器
 type Validation struct {
 	errHandling ErrorHandling
-	errors      Errors
+	errors      Messages
 }
 
 // Validator 验证对象接口
 //
 // 凡实现此接口的对象，在 NewField 中会自动调用此接口的方法进行额外验证。
 type Validator interface {
-	Validate(ErrorHandling) Errors
+	Validate(ErrorHandling) Messages
 }
 
 // New 返回 Validation 对象
 func New(errHandling ErrorHandling) *Validation {
 	return &Validation{
 		errHandling: errHandling,
-		errors:      Errors{},
+		errors:      Messages{},
 	}
 }
 
@@ -66,6 +66,6 @@ func (v *Validation) NewField(val interface{}, name string, rules ...Ruler) *Val
 }
 
 // Result 返回验证结果
-func (v *Validation) Result() Errors {
+func (v *Validation) Result() Messages {
 	return v.errors
 }

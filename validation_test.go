@@ -25,13 +25,13 @@ type (
 	}
 )
 
-func (obj *objectWithValidate) Validate(errHandling ErrorHandling) Errors {
+func (obj *objectWithValidate) Validate(errHandling ErrorHandling) Messages {
 	return New(errHandling).
 		NewField(obj.Age, ".age", Min("不能小于 18", 18)).
 		Result()
 }
 
-func (root *root) Validate(errHandling ErrorHandling) Errors {
+func (root *root) Validate(errHandling ErrorHandling) Messages {
 	return New(errHandling).
 		NewField(root.O1, "o1", If(root.O2 == nil, Required("o1 required", true)).Rules()...).
 		NewField(root.O2, "o2", If(root.O1 == nil, Required("o2 required", true)).Rules()...).
