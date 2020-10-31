@@ -3,6 +3,8 @@
 // Package validation 数据验证相关功能
 package validation
 
+import "golang.org/x/text/message"
+
 // 当验证出错时的几种可用处理方式
 const (
 	ContinueAtError  ErrorHandling = iota // 碰到错误不中断验证
@@ -17,32 +19,36 @@ type ErrorHandling int8
 type Validation struct {
 	errHandling ErrorHandling
 	messages    Messages
+	p           *message.Printer
 }
 
-// Validator 验证对象接口
+// FieldsValidator 验证子项接口
+//
+// 一般用在自定义类型上，用于验证自身的子项数据。
 //
 // 凡实现此接口的对象，在 NewField 中会自动调用此接口的方法进行额外验证。
-type Validator interface {
-	Validate(ErrorHandling) Messages
+type FieldsValidator interface {
+	ValidateFields(ErrorHandling, *message.Printer) Messages
 }
 
 // New 返回 Validation 对象
-func New(errHandling ErrorHandling) *Validation {
+func New(errHandling ErrorHandling, p *message.Printer) *Validation {
 	return &Validation{
 		errHandling: errHandling,
 		messages:    Messages{},
+		p:           p,
 	}
 }
 
 // NewField 验证新的字段
-func (v *Validation) NewField(val interface{}, name string, rules ...Ruler) *Validation {
+func (v *Validation) NewField(val interface{}, name string, rules ...*Rule) *Validation {
 	if len(v.messages) > 0 && v.errHandling == ExitAtError {
 		return v
 	}
 
 	for _, rule := range rules {
-		if msg := rule.Validate(val); msg != "" {
-			v.messages.Add(name, msg)
+		if !rule.isValid(val) {
+			v.messages.Add(name, rule.message(v.p))
 
 			if v.errHandling != ContinueAtError {
 				return v
@@ -54,8 +60,8 @@ func (v *Validation) NewField(val interface{}, name string, rules ...Ruler) *Val
 		return v
 	}
 
-	if vv, ok := val.(Validator); ok {
-		if errors := vv.Validate(v.errHandling); len(errors) > 0 {
+	if vv, ok := val.(FieldsValidator); ok {
+		if errors := vv.ValidateFields(v.errHandling, v.p); len(errors) > 0 {
 			for key, vals := range errors {
 				v.messages.Add(name+key, vals...)
 			}

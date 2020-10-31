@@ -10,15 +10,11 @@ import "github.com/issue9/is"
 // 如果 skipNil 为 false，则 nil 被当作空值处理。
 //
 // 具体判断规则可参考 github.com/issue9/is.Empty
-func Required(msg string, skipNil bool) Ruler {
-	return RuleFunc(func(v interface{}) (ret string) {
+func Required(skipNil bool) ValidateFunc {
+	return ValidateFunc(func(v interface{}) bool {
 		if skipNil && v == nil {
-			return
+			return true
 		}
-
-		if is.Empty(v, false) {
-			ret = msg
-		}
-		return
+		return !is.Empty(v, false)
 	})
 }

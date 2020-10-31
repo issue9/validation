@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/issue9/assert"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 type (
@@ -25,42 +27,42 @@ type (
 	}
 )
 
-func (obj *objectWithValidate) Validate(errHandling ErrorHandling) Messages {
-	return New(errHandling).
-		NewField(obj.Age, ".age", Min("不能小于 18", 18)).
+func (obj *objectWithValidate) ValidateFields(errHandling ErrorHandling, p *message.Printer) Messages {
+	return New(errHandling, p).
+		NewField(obj.Age, ".age", Min(18).Rule("不能小于 18")).
 		Messages()
 }
 
-func (root *root) Validate(errHandling ErrorHandling) Messages {
-	return New(errHandling).
-		NewField(root.O1, "o1", If(root.O2 == nil, Required("o1 required", true)).Rules()...).
-		NewField(root.O2, "o2", If(root.O1 == nil, Required("o2 required", true)).Rules()...).
+func (root *root) ValidateFields(errHandling ErrorHandling, p *message.Printer) Messages {
+	return New(errHandling, p).
+		NewField(root.O1, "o1", If(root.O2 == nil, Required(true).Rule("o1 required")).Rules()...).
+		NewField(root.O2, "o2", If(root.O1 == nil, Required(true).Rule("o2 required")).Rules()...).
 		Messages()
 }
 
 func TestValidation_ErrorHandling(t *testing.T) {
 	a := assert.New(t)
 
-	v := New(ContinueAtError).
-		NewField(-100, "f1", Min("-2", -2), Min("-3", -3)).
-		NewField(100, "f2", Max("50", 50), Max("-4", -4))
-	a.Equal(v.Messages(), map[string][]string{
+	v := New(ContinueAtError, message.NewPrinter(language.Chinese)).
+		NewField(-100, "f1", Min(-2).Rule("-2"), Min(-3).Rule("-3")).
+		NewField(100, "f2", Max(50).Rule("50"), Max(-4).Rule("-4"))
+	a.Equal(v.Messages(), Messages{
 		"f1": {"-2", "-3"},
 		"f2": {"50", "-4"},
 	})
 
-	v = New(ExitFieldAtError).
-		NewField(-100, "f1", Min("-2", -2), Min("-3", -3)).
-		NewField(100, "f2", Max("50", 50), Max("-4", -4))
-	a.Equal(v.Messages(), map[string][]string{
+	v = New(ExitFieldAtError, message.NewPrinter(language.Chinese)).
+		NewField(-100, "f1", Min(-2).Rule("-2"), Min(-3).Rule("-3")).
+		NewField(100, "f2", Max(50).Rule("50"), Max(-4).Rule("-4"))
+	a.Equal(v.Messages(), Messages{
 		"f1": {"-2"},
 		"f2": {"50"},
 	})
 
-	v = New(ExitAtError).
-		NewField(-100, "f1", Min("-2", -2), Min("-3", -3)).
-		NewField(100, "f2", Max("50", 50), Max("-4", -4))
-	a.Equal(v.Messages(), map[string][]string{
+	v = New(ExitAtError, message.NewPrinter(language.Chinese)).
+		NewField(-100, "f1", Min(-2).Rule("-2"), Min(-3).Rule("-3")).
+		NewField(100, "f2", Max(50).Rule("50"), Max(-4).Rule("-4"))
+	a.Equal(v.Messages(), Messages{
 		"f1": {"-2"},
 	})
 }
@@ -69,23 +71,23 @@ func TestValidation_NewObject(t *testing.T) {
 	a := assert.New(t)
 
 	obj := &objectWithValidate{}
-	v := New(ContinueAtError).
+	v := New(ContinueAtError, message.NewPrinter(language.Chinese)).
 		NewField(obj, "obj")
-	a.Equal(v.Messages(), map[string][]string{
+	a.Equal(v.Messages(), Messages{
 		"obj.age": {"不能小于 18"},
 	})
 
 	//
 	r := root{}
-	errs := r.Validate(ContinueAtError)
-	a.Equal(errs, map[string][]string{
+	errs := r.ValidateFields(ContinueAtError, message.NewPrinter(language.Chinese))
+	a.Equal(errs, Messages{
 		"o1": {"o1 required"},
 		"o2": {"o2 required"},
 	})
 
 	r = root{O1: &objectWithValidate{}}
-	errs = r.Validate(ContinueAtError)
-	a.Equal(errs, map[string][]string{
+	errs = r.ValidateFields(ContinueAtError, message.NewPrinter(language.Chinese))
+	a.Equal(errs, Messages{
 		"o1.age": {"不能小于 18"},
 	})
 }

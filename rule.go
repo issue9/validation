@@ -2,18 +2,48 @@
 
 package validation
 
-// Ruler 验证规则需要实现的接口
-type Ruler interface {
+import "golang.org/x/text/message"
+
+// Validator 用于验证指定数据的合法性
+type Validator interface {
 	// 验证 v 是否符合当前的规则
-	//
-	// 如果不符合则返回具体的说明，否则返回空值。
-	Validate(v interface{}) string
+	IsValid(v interface{}) bool
 }
 
-// RuleFunc 验证函数的签名
-type RuleFunc func(v interface{}) string
+// ValidateFunc 用于验证指定数据的合法性
+type ValidateFunc func(interface{}) bool
 
-// Validate 实现 Ruler
-func (f RuleFunc) Validate(v interface{}) string {
+// Rule 验证规则需要实现的接口
+type Rule struct {
+	validator Validator
+
+	key    message.Reference
+	values []interface{}
+}
+
+// IsValid 将当前函数作为 Validator 使用
+func (f ValidateFunc) IsValid(v interface{}) bool {
 	return f(v)
+}
+
+// Rule 将当前函数转换成 Rule 实例
+func (f ValidateFunc) Rule(key message.Reference, v ...interface{}) *Rule {
+	return NewRule(f, key, v...)
+}
+
+// NewRule 返回 Rule 实例
+func NewRule(validator Validator, key message.Reference, v ...interface{}) *Rule {
+	return &Rule{
+		validator: validator,
+		key:       key,
+		values:    v,
+	}
+}
+
+func (rule *Rule) message(p *message.Printer) string {
+	return p.Sprintf(rule.key, rule.values...)
+}
+
+func (rule *Rule) isValid(v interface{}) bool {
+	return rule.validator.IsValid(v)
 }

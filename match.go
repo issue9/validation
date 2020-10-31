@@ -5,23 +5,17 @@ package validation
 import "regexp"
 
 // Match 定义正则匹配的验证规则
-func Match(msg string, exp *regexp.Regexp) Ruler {
-	return RuleFunc(func(v interface{}) (ret string) {
-		var ok bool
+func Match(exp *regexp.Regexp) ValidateFunc {
+	return ValidateFunc(func(v interface{}) bool {
 		switch vv := v.(type) {
 		case string:
-			ok = exp.MatchString(vv)
+			return exp.MatchString(vv)
 		case []byte:
-			ok = exp.Match(vv)
+			return exp.Match(vv)
 		case []rune:
-			ok = exp.MatchString(string(vv))
+			return exp.MatchString(string(vv))
 		default:
-			return msg
+			return false
 		}
-
-		if !ok {
-			ret = msg
-		}
-		return
 	})
 }

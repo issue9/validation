@@ -2,4 +2,4 @@
 
 package validation
 
-var _ Ruler = RuleFunc(func(interface{}) string { return "" })
+var _ Validator = Max(100)

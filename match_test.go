@@ -12,9 +12,9 @@ import (
 func TestMatch(t *testing.T) {
 	a := assert.New(t)
 
-	r := Match("msg", regexp.MustCompile("[a-z]+"))
-	a.Empty(r.Validate("abc"))
-	a.Empty(r.Validate([]byte("def")))
-	a.Equal(r.Validate([]rune("123")), "msg")
-	a.Equal(r.Validate(123), "msg") // 无法验证
+	r := Match(regexp.MustCompile("[a-z]+"))
+	a.True(r.IsValid("abc"))
+	a.True(r.IsValid([]byte("def")))
+	a.False(r.IsValid([]rune("123")))
+	a.False(r.IsValid(123)) // 无法验证
 }

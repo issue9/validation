@@ -8,54 +8,31 @@ import (
 	"github.com/issue9/sliceutil"
 )
 
-type inRule struct {
-	elements []interface{}
-	msg      string
-	not      bool
-}
-
 // In 声明枚举类型的验证规则
 //
 // 要求验证的值必须包含在 element 元素中，如果不存在，则返回 msg 的内容。
-func In(msg string, element ...interface{}) Ruler {
-	return newInRule(false, msg, element...)
+func In(element ...interface{}) ValidateFunc {
+	return isIn(false, element...)
 }
 
 // NotIn 声明不在枚举中的验证规则
-func NotIn(msg string, element ...interface{}) Ruler {
-	return newInRule(true, msg, element...)
+func NotIn(element ...interface{}) ValidateFunc {
+	return isIn(true, element...)
 }
 
-func newInRule(not bool, msg string, element ...interface{}) Ruler {
-	return &inRule{
-		msg:      msg,
-		elements: element,
-		not:      not,
-	}
-}
-
-func (rule *inRule) Validate(v interface{}) string {
-	if (rule.not && rule.in(v)) || (!rule.not && !rule.in(v)) {
-		return rule.msg
-	}
-	return ""
-}
-
-func (rule *inRule) in(v interface{}) bool {
-	return sliceutil.Count(rule.elements, func(i int) bool {
-		elem := rule.elements[i]
-
-		switch v.(type) {
-		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+func isIn(not bool, element ...interface{}) ValidateFunc {
+	return ValidateFunc(func(v interface{}) bool {
+		in := sliceutil.Count(element, func(i int) bool {
+			elem := element[i]
 			elemType := reflect.TypeOf(elem)
-			rv := reflect.ValueOf(v)
 
-			if !rv.Type().ConvertibleTo(elemType) {
-				return false
+			rv := reflect.ValueOf(v)
+			if rv.Type().ConvertibleTo(elemType) && rv.Convert(elemType).Interface() == elem {
+				return true
 			}
-			return rv.Convert(elemType).Interface() == elem
-		default:
-			return reflect.DeepEqual(v, rule.elements[i])
-		}
-	}) > 0
+			return reflect.DeepEqual(v, elem)
+		}) > 0
+
+		return (!not && in) || (not && !in)
+	})
 }

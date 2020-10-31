@@ -6,4 +6,5 @@ require (
 	github.com/issue9/assert v1.4.1
 	github.com/issue9/is v1.4.2
 	github.com/issue9/sliceutil v0.6.0
+	golang.org/x/text v0.3.4
 )

@@ -11,24 +11,28 @@ import (
 func TestLength(t *testing.T) {
 	a := assert.New(t)
 
-	l := Length("msg", 5, 7)
-	a.Equal(l.Validate("123"), "msg")
-	a.Equal(l.Validate([]byte("123")), "msg")
-	a.Empty(l.Validate([]rune("12345")))
-	a.Equal(l.Validate(&struct{}{}), "msg")
+	a.Panic(func() {
+		Length(500, 50)
+	})
+
+	l := Length(5, 7)
+	a.False(l.IsValid("123"))
+	a.False(l.IsValid([]byte("123")))
+	a.True(l.IsValid([]rune("12345")))
+	a.False(l.IsValid(&struct{}{}))
 
 	// 不限制长度
-	l = Length("msg", -1, -1)
-	a.Empty(l.Validate("12345678910"))
-	a.Empty(l.Validate([]rune("")))
+	l = Length(-1, -1)
+	a.True(l.IsValid("12345678910"))
+	a.True(l.IsValid([]rune("")))
 
-	l = MinLength("msg", 6)
-	a.Empty(l.Validate("123456"))
-	a.Empty(l.Validate("12345678910"))
-	a.Equal(l.Validate("12345"), "msg")
+	l = MinLength(6)
+	a.True(l.IsValid("123456"))
+	a.True(l.IsValid("12345678910"))
+	a.False(l.IsValid("12345"))
 
-	l = MaxLength("msg", 6)
-	a.Empty(l.Validate("123456"))
-	a.Equal(l.Validate("12345678910"), "msg")
-	a.Empty(l.Validate("12345"))
+	l = MaxLength(6)
+	a.True(l.IsValid("123456"))
+	a.False(l.IsValid("12345678910"))
+	a.True(l.IsValid("12345"))
 }
