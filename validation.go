@@ -16,7 +16,7 @@ type ErrorHandling int8
 // Validation 验证器
 type Validation struct {
 	errHandling ErrorHandling
-	errors      Messages
+	messages    Messages
 }
 
 // Validator 验证对象接口
@@ -30,19 +30,19 @@ type Validator interface {
 func New(errHandling ErrorHandling) *Validation {
 	return &Validation{
 		errHandling: errHandling,
-		errors:      Messages{},
+		messages:    Messages{},
 	}
 }
 
 // NewField 验证新的字段
 func (v *Validation) NewField(val interface{}, name string, rules ...Ruler) *Validation {
-	if len(v.errors) > 0 && v.errHandling == ExitAtError {
+	if len(v.messages) > 0 && v.errHandling == ExitAtError {
 		return v
 	}
 
 	for _, rule := range rules {
 		if msg := rule.Validate(val); msg != "" {
-			v.errors.Add(name, msg)
+			v.messages.Add(name, msg)
 
 			if v.errHandling != ContinueAtError {
 				return v
@@ -50,14 +50,14 @@ func (v *Validation) NewField(val interface{}, name string, rules ...Ruler) *Val
 		}
 	}
 
-	if len(v.errors[name]) > 0 { // 当前验证规则有错，则不验证子元素。
+	if len(v.messages[name]) > 0 { // 当前验证规则有错，则不验证子元素。
 		return v
 	}
 
 	if vv, ok := val.(Validator); ok {
 		if errors := vv.Validate(v.errHandling); len(errors) > 0 {
 			for key, vals := range errors {
-				v.errors.Add(name+key, vals...)
+				v.messages.Add(name+key, vals...)
 			}
 		}
 	}
@@ -65,7 +65,7 @@ func (v *Validation) NewField(val interface{}, name string, rules ...Ruler) *Val
 	return v
 }
 
-// Result 返回验证结果
-func (v *Validation) Result() Messages {
-	return v.errors
+// Messages 返回验证结果
+func (v *Validation) Messages() Messages {
+	return v.messages
 }

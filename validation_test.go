@@ -28,14 +28,14 @@ type (
 func (obj *objectWithValidate) Validate(errHandling ErrorHandling) Messages {
 	return New(errHandling).
 		NewField(obj.Age, ".age", Min("不能小于 18", 18)).
-		Result()
+		Messages()
 }
 
 func (root *root) Validate(errHandling ErrorHandling) Messages {
 	return New(errHandling).
 		NewField(root.O1, "o1", If(root.O2 == nil, Required("o1 required", true)).Rules()...).
 		NewField(root.O2, "o2", If(root.O1 == nil, Required("o2 required", true)).Rules()...).
-		Result()
+		Messages()
 }
 
 func TestValidation_ErrorHandling(t *testing.T) {
@@ -44,7 +44,7 @@ func TestValidation_ErrorHandling(t *testing.T) {
 	v := New(ContinueAtError).
 		NewField(-100, "f1", Min("-2", -2), Min("-3", -3)).
 		NewField(100, "f2", Max("50", 50), Max("-4", -4))
-	a.Equal(v.Result(), map[string][]string{
+	a.Equal(v.Messages(), map[string][]string{
 		"f1": {"-2", "-3"},
 		"f2": {"50", "-4"},
 	})
@@ -52,7 +52,7 @@ func TestValidation_ErrorHandling(t *testing.T) {
 	v = New(ExitFieldAtError).
 		NewField(-100, "f1", Min("-2", -2), Min("-3", -3)).
 		NewField(100, "f2", Max("50", 50), Max("-4", -4))
-	a.Equal(v.Result(), map[string][]string{
+	a.Equal(v.Messages(), map[string][]string{
 		"f1": {"-2"},
 		"f2": {"50"},
 	})
@@ -60,7 +60,7 @@ func TestValidation_ErrorHandling(t *testing.T) {
 	v = New(ExitAtError).
 		NewField(-100, "f1", Min("-2", -2), Min("-3", -3)).
 		NewField(100, "f2", Max("50", 50), Max("-4", -4))
-	a.Equal(v.Result(), map[string][]string{
+	a.Equal(v.Messages(), map[string][]string{
 		"f1": {"-2"},
 	})
 }
@@ -71,7 +71,7 @@ func TestValidation_NewObject(t *testing.T) {
 	obj := &objectWithValidate{}
 	v := New(ContinueAtError).
 		NewField(obj, "obj")
-	a.Equal(v.Result(), map[string][]string{
+	a.Equal(v.Messages(), map[string][]string{
 		"obj.age": {"不能小于 18"},
 	})
 
