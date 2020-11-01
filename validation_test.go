@@ -29,14 +29,14 @@ type (
 
 func (obj *objectWithValidate) ValidateFields(errHandling ErrorHandling, p *message.Printer) Messages {
 	return New(errHandling, p).
-		NewField(obj.Age, ".age", Min(18).Rule("不能小于 18")).
+		NewField(obj.Age, ".age", Min(18).Message("不能小于 18")).
 		Messages()
 }
 
 func (root *root) ValidateFields(errHandling ErrorHandling, p *message.Printer) Messages {
 	return New(errHandling, p).
-		NewField(root.O1, "o1", If(root.O2 == nil, Required(true).Rule("o1 required")).Rules()...).
-		NewField(root.O2, "o2", If(root.O1 == nil, Required(true).Rule("o2 required")).Rules()...).
+		NewField(root.O1, "o1", If(root.O2 == nil, Required(true).Message("o1 required")).Rules()...).
+		NewField(root.O2, "o2", If(root.O1 == nil, Required(true).Message("o2 required")).Rules()...).
 		Messages()
 }
 
@@ -44,24 +44,24 @@ func TestValidation_ErrorHandling(t *testing.T) {
 	a := assert.New(t)
 
 	v := New(ContinueAtError, message.NewPrinter(language.Chinese)).
-		NewField(-100, "f1", Min(-2).Rule("-2"), Min(-3).Rule("-3")).
-		NewField(100, "f2", Max(50).Rule("50"), Max(-4).Rule("-4"))
+		NewField(-100, "f1", Min(-2).Message("-2"), Min(-3).Message("-3")).
+		NewField(100, "f2", Max(50).Message("50"), Max(-4).Message("-4"))
 	a.Equal(v.Messages(), Messages{
 		"f1": {"-2", "-3"},
 		"f2": {"50", "-4"},
 	})
 
 	v = New(ExitFieldAtError, message.NewPrinter(language.Chinese)).
-		NewField(-100, "f1", Min(-2).Rule("-2"), Min(-3).Rule("-3")).
-		NewField(100, "f2", Max(50).Rule("50"), Max(-4).Rule("-4"))
+		NewField(-100, "f1", Min(-2).Message("-2"), Min(-3).Message("-3")).
+		NewField(100, "f2", Max(50).Message("50"), Max(-4).Message("-4"))
 	a.Equal(v.Messages(), Messages{
 		"f1": {"-2"},
 		"f2": {"50"},
 	})
 
 	v = New(ExitAtError, message.NewPrinter(language.Chinese)).
-		NewField(-100, "f1", Min(-2).Rule("-2"), Min(-3).Rule("-3")).
-		NewField(100, "f2", Max(50).Rule("50"), Max(-4).Rule("-4"))
+		NewField(-100, "f1", Min(-2).Message("-2"), Min(-3).Message("-3")).
+		NewField(100, "f2", Max(50).Message("50"), Max(-4).Message("-4"))
 	a.Equal(v.Messages(), Messages{
 		"f1": {"-2"},
 	})

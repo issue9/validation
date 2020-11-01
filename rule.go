@@ -26,8 +26,8 @@ func (f ValidateFunc) IsValid(v interface{}) bool {
 	return f(v)
 }
 
-// Rule 将当前函数转换成 Rule 实例
-func (f ValidateFunc) Rule(key message.Reference, v ...interface{}) *Rule {
+// Message 将当前函数转换成 Message 实例
+func (f ValidateFunc) Message(key message.Reference, v ...interface{}) *Rule {
 	return NewRule(f, key, v...)
 }
 
@@ -45,5 +45,6 @@ func (rule *Rule) message(p *message.Printer) string {
 }
 
 func (rule *Rule) isValid(v interface{}) bool {
+	// TODO
 	return rule.validator.IsValid(v)
 }
