@@ -67,7 +67,7 @@ func TestValidation_ErrorHandling(t *testing.T) {
 	})
 }
 
-func TestValidation_NewObject(t *testing.T) {
+func TestValidation_NewField(t *testing.T) {
 	a := assert.New(t)
 
 	obj := &objectWithValidate{}
@@ -77,7 +77,7 @@ func TestValidation_NewObject(t *testing.T) {
 		"obj.age": {"不能小于 18"},
 	})
 
-	//
+	// object
 	r := root{}
 	errs := r.ValidateFields(ContinueAtError, message.NewPrinter(language.Chinese))
 	a.Equal(errs, Messages{
@@ -89,5 +89,19 @@ func TestValidation_NewObject(t *testing.T) {
 	errs = r.ValidateFields(ContinueAtError, message.NewPrinter(language.Chinese))
 	a.Equal(errs, Messages{
 		"o1.age": {"不能小于 18"},
+	})
+
+	// slice
+	v = New(ContinueAtError, message.NewPrinter(language.SimplifiedChinese))
+	messages := v.NewField([]int{1, 2, 6}, "slice", Min(5).Message("min-5")).Messages()
+	a.Equal(messages, Messages{
+		"slice": []string{"min-5"},
+	})
+
+	v = New(ContinueAtError, message.NewPrinter(language.SimplifiedChinese))
+	messages = v.NewField([]int{1, 2, 6}, "slice", Min(5).Message("min-5").AsSlice()).Messages()
+	a.Equal(messages, Messages{
+		"slice[0]": []string{"min-5"},
+		"slice[1]": []string{"min-5"},
 	})
 }

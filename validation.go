@@ -47,9 +47,7 @@ func (v *Validation) NewField(val interface{}, name string, rules ...*Rule) *Val
 	}
 
 	for _, rule := range rules {
-		if !rule.isValid(val) {
-			v.messages.Add(name, rule.message(v.p))
-
+		if !rule.valid(v, name, val) {
 			if v.errHandling != ContinueAtError {
 				return v
 			}
