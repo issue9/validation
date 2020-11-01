@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package validation 数据验证相关功能
+// Package validation 数据验证
 package validation
 
 import "golang.org/x/text/message"
@@ -41,6 +41,10 @@ func New(errHandling ErrorHandling, p *message.Printer) *Validation {
 }
 
 // NewField 验证新的字段
+//
+// val 表示需要被验证的值，如果是一个对象且需要验证子字段，那么让对象实现 FieldsValidator 接口，
+// 则会自动调用该方法验证子项，将会将验证完的信息返回给当前的 Validation 实例；
+// name 表示当前字段的名称；rules 表示验证的规则，按顺序依资验证。
 func (v *Validation) NewField(val interface{}, name string, rules ...*Rule) *Validation {
 	if len(v.messages) > 0 && v.errHandling == ExitAtError {
 		return v

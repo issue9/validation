@@ -8,6 +8,7 @@ import (
 	"github.com/issue9/assert"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
+	"golang.org/x/text/message/catalog"
 )
 
 type (
@@ -103,5 +104,24 @@ func TestValidation_NewField(t *testing.T) {
 	a.Equal(messages, Messages{
 		"slice[0]": []string{"min-5"},
 		"slice[1]": []string{"min-5"},
+	})
+}
+
+func TestValidation_Locale(t *testing.T) {
+	a := assert.New(t)
+	builder := catalog.NewBuilder()
+	builder.SetString(language.SimplifiedChinese, "lang", "chn")
+	builder.SetString(language.TraditionalChinese, "lang", "cht")
+
+	v := New(ContinueAtError, message.NewPrinter(language.SimplifiedChinese, message.Catalog(builder))).
+		NewField(5, "obj", Max(4).Message("lang"))
+	a.Equal(v.Messages(), Messages{
+		"obj": {"chn"},
+	})
+
+	v = New(ContinueAtError, message.NewPrinter(language.TraditionalChinese, message.Catalog(builder))).
+		NewField(5, "obj", Max(4).Message("lang"))
+	a.Equal(v.Messages(), Messages{
+		"obj": {"cht"},
 	})
 }
