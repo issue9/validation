@@ -1,5 +1,5 @@
 validation
-[![Go](https://github.com/issue9/validation/workflows/Go/badge.svg)](https://github.com/issue9/validation/actions?query=workflow%3AGo)
+[![Go](https://github.com/issue9/validation/workflows/Test/badge.svg)](https://github.com/issue9/validation/actions?query=workflow%3ATest)
 [![Go version](https://img.shields.io/badge/Go-1.13-brightgreen.svg?style=flat)](https://golang.org)
 [![Go Report Card](https://goreportcard.com/badge/github.com/issue9/validation)](https://goreportcard.com/report/github.com/issue9/validation)
 [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
@@ -8,6 +8,55 @@ validation
 ======
 
 数据验证
+
+```go
+import (
+    "github.com/issue9/validation"
+    "golang.org/x/text/language"
+    "golang.org/x/text/message"
+)
+
+type Object {
+    Age int
+    Name string
+}
+
+o := &Object{}
+
+v := validation.New(validation.ContinueAtError, message.NewPrinter(language.MustParse("cmn-Hans")))
+messages := v.NewField(&o.Age, "age", validation.Min(18).Message("必须大于 18")).
+    NewField(&o.Name, "name", validation.Required(false).Message("不能为空")).
+    Messages()
+```
+
+#### 本地化
+
+本地化采用 golang.org/x/text 包
+
+```go
+import (
+    "github.com/issue9/validation"
+    "golang.org/x/text/language"
+    "golang.org/x/text/message"
+    "golang.org/x/text/message/catalog"
+)
+
+type Object {
+    Age int
+    Name string
+}
+
+builder := catalog.NewBuilder()
+builder.SetString(language.SimplifiedChinese, "lang", "chn")
+builder.SetString(language.TraditionalChinese, "lang", "cht")
+
+o := &Object{}
+
+p := message.NewPrinter(language.SimplifiedChinese, message.Catalog(builder))
+v := validation.New(validation.ContinueAtError, p)
+messages := v.NewField(&o.Age, "age", validation.Min(18).Message("lang")). // 根据 p 的不同，会输出不同内容
+    NewField(&o.Name, "name", validation.Required(false).Message("不能为空")).
+    Messages()
 
 版权
 ----
