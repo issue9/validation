@@ -12,6 +12,7 @@ validation
 ```go
 import (
     "github.com/issue9/validation"
+    "github.com/issue9/validation/validator"
     "golang.org/x/text/language"
     "golang.org/x/text/message"
 )
@@ -24,8 +25,8 @@ type Object {
 o := &Object{}
 
 v := validation.New(validation.ContinueAtError, message.NewPrinter(language.MustParse("cmn-Hans")))
-messages := v.NewField(&o.Age, "age", validation.Min(18).Message("必须大于 18")).
-    NewField(&o.Name, "name", validation.Required(false).Message("不能为空")).
+messages := v.NewField(&o.Age, "age", validator.Min(18).Message("必须大于 18")).
+    NewField(&o.Name, "name", validator.Required(false).Message("不能为空")).
     Messages()
 ```
 
@@ -36,6 +37,7 @@ messages := v.NewField(&o.Age, "age", validation.Min(18).Message("必须大于 1
 ```go
 import (
     "github.com/issue9/validation"
+    "github.com/issue9/validation/validator"
     "golang.org/x/text/language"
     "golang.org/x/text/message"
     "golang.org/x/text/message/catalog"
@@ -54,8 +56,8 @@ o := &Object{}
 
 p := message.NewPrinter(language.SimplifiedChinese, message.Catalog(builder))
 v := validation.New(validation.ContinueAtError, p)
-messages := v.NewField(&o.Age, "age", validation.Min(18).Message("lang")). // 根据 p 的不同，会输出不同内容
-    NewField(&o.Name, "name", validation.Required(false).Message("不能为空")).
+messages := v.NewField(&o.Age, "age", validator.Min(18).Message("lang")). // 根据 p 的不同，会输出不同内容
+    NewField(&o.Name, "name", validator.Required(false).Message("不能为空")).
     Messages()
 ```
 
