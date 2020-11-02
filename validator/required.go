@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 
-package validation
+package validator
 
-import "github.com/issue9/is"
+import (
+	"github.com/issue9/is"
+
+	"github.com/issue9/validation"
+)
 
 // Required 判断值是否必须为非空的规则
 //
@@ -10,8 +14,8 @@ import "github.com/issue9/is"
 // 如果 skipNil 为 false，则 nil 被当作空值处理。
 //
 // 具体判断规则可参考 github.com/issue9/is.Empty
-func Required(skipNil bool) ValidateFunc {
-	return ValidateFunc(func(v interface{}) bool {
+func Required(skipNil bool) validation.ValidateFunc {
+	return validation.ValidateFunc(func(v interface{}) bool {
 		if skipNil && v == nil {
 			return true
 		}

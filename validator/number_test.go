@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-package validation
+package validator
 
 import (
 	"math"

@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 
-package validation
+package validator
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/issue9/validation"
+)
 
 // Match 定义正则匹配的验证规则
-func Match(exp *regexp.Regexp) ValidateFunc {
-	return ValidateFunc(func(v interface{}) bool {
+func Match(exp *regexp.Regexp) validation.ValidateFunc {
+	return validation.ValidateFunc(func(v interface{}) bool {
 		switch vv := v.(type) {
 		case string:
 			return exp.MatchString(vv)

@@ -1,12 +1,28 @@
 // SPDX-License-Identifier: MIT
 
-package validation
+package validator
 
 import (
 	"testing"
 
 	"github.com/issue9/assert"
+
+	"github.com/issue9/validation"
 )
+
+type object struct {
+	Name string
+	Age  int
+}
+
+type objectWithoutFieldValidator struct {
+	Name string
+	Age  int
+}
+
+func (obj *object) ValidateFields(v *validation.Validation) {
+	v.NewField(obj.Age, "age", Min(18).Message("不能小于 18"))
+}
 
 func TestIn(t *testing.T) {
 	a := assert.New(t)
