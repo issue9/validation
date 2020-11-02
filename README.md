@@ -57,6 +57,7 @@ v := validation.New(validation.ContinueAtError, p)
 messages := v.NewField(&o.Age, "age", validation.Min(18).Message("lang")). // 根据 p 的不同，会输出不同内容
     NewField(&o.Name, "name", validation.Required(false).Message("不能为空")).
     Messages()
+```
 
 版权
 ----

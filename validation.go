@@ -36,8 +36,8 @@ type FieldsValidator interface {
 
 // New 返回 Validation 对象
 //
-// separator 用于指定上下级元素名称之间的连接符。比如在返回 xml 元素时，
-// 可能会采用 root/element 的格式表示上下级，此时 separator 就为 /。
+// separator 用于指定字段名称上下级元素名称之间的连接符。比如在返回 xml 元素时，
+// 可能会采用 root/element 的格式表示上下级，此时 separator 可设置为 /。
 // 而在 json 中，可能会被转换成 root.element 的格式。
 func New(errHandling ErrorHandling, p *message.Printer, separator string) *Validation {
 	return &Validation{
