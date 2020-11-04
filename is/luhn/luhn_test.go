@@ -8,17 +8,17 @@ import (
 	"github.com/issue9/assert"
 )
 
-func TestString(t *testing.T) {
+func TestIsValid(t *testing.T) {
 	a := assert.New(t)
 
-	a.True(ValidString("6259650871772098"))
-	a.True(ValidString("79927398713"))
-	a.False(ValidString("79927398710"))
+	a.True(IsValid([]byte("6259650871772098")))
+	a.True(IsValid([]byte("79927398713")))
+	a.False(IsValid([]byte("79927398710")))
 }
 
 func TestGenerateWithPrefix(t *testing.T) {
 	a := assert.New(t)
 
 	a.Equal("6259650871772098", string(GenerateWithPrefix([]byte("625965087177209"))))
-	a.True(Valid(GenerateWithPrefix([]byte("625965087177209"))))
+	a.True(IsValid(GenerateWithPrefix([]byte("625965087177209"))))
 }

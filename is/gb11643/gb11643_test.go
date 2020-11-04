@@ -12,41 +12,41 @@ import (
 func TestParse(t *testing.T) {
 	a := assert.New(t)
 
-	g, err := Parse("140622209101019893")
-	date, err := time.Parse(layout, "20910101")
-	a.NotError(err)
+	g, err := Parse("513330199111066159")
 	a.NotError(err).NotNil(g)
-	a.Equal(g.Raw, "140622209101019893").
-		Equal(g.Region, "140622").
+	date, err := time.Parse(layout, "19911106")
+	a.NotError(err)
+	a.Equal(g.Raw, "513330199111066159").
+		Equal(g.Region, "513330").
 		Equal(g.Date, date).
 		True(g.IsMale)
 
-	g, err = Parse("140622209101019883")
-	date, err = time.Parse(layout, "20910101")
-	a.NotError(err)
+	g, err = Parse("33050219880702447X")
 	a.NotError(err).NotNil(g)
-	a.Equal(g.Raw, "140622209101019883").
-		Equal(g.Region, "140622").
-		Equal(g.Date, date).
-		False(g.IsMale)
-
-	g, err = Parse("140622910101989")
-	date, err = time.Parse(layout, "19910101")
+	date, err = time.Parse(layout, "19880702")
 	a.NotError(err)
-	a.NotError(err).NotNil(g)
-	a.Equal(g.Raw, "140622910101989").
-		Equal(g.Region, "140622").
+	a.Equal(g.Raw, "33050219880702447X").
+		Equal(g.Region, "330502").
 		Equal(g.Date, date).
 		True(g.IsMale)
 
-	g, err = Parse("140622910101988")
-	date, err = time.Parse(layout, "19910101")
-	a.NotError(err)
+	g, err = Parse("330502880702447")
 	a.NotError(err).NotNil(g)
-	a.Equal(g.Raw, "140622910101988").
-		Equal(g.Region, "140622").
+	date, err = time.Parse(layout, "19880702")
+	a.NotError(err)
+	a.Equal(g.Raw, "330502880702447").
+		Equal(g.Region, "330502").
 		Equal(g.Date, date).
-		False(g.IsMale)
+		True(g.IsMale)
+
+	g, err = Parse("350303900203307")
+	a.NotError(err).NotNil(g)
+	date, err = time.Parse(layout, "19900203")
+	a.NotError(err)
+	a.Equal(g.Raw, "350303900203307").
+		Equal(g.Region, "350303").
+		Equal(g.Date, date).
+		True(g.IsMale)
 
 	g, err = Parse("")
 	a.Error(err).Nil(g)

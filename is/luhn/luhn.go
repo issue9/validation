@@ -10,14 +10,9 @@
 // 4. (n1+n2) % 10 如果值为 0，表示正确。
 package luhn
 
-// Valid 传入 []byte 验证是否正确
-func Valid(v []byte) bool {
+// IsValid 传入 []byte 验证是否正确
+func IsValid(v []byte) bool {
 	return 0 == (checksum(v, false) % 10)
-}
-
-// ValidString 传入 string 验证是否正确
-func ValidString(v string) bool {
-	return Valid([]byte(v))
 }
 
 // GenerateWithPrefix 给定前缀，添加最后一位校验位
