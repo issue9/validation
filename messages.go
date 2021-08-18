@@ -24,3 +24,10 @@ func (err Messages) Set(key string, val ...string) {
 
 	err[key] = val
 }
+
+// Merge 将另一个 Messages 内容合并到当前实例
+func (err Messages) Merge(m Messages) {
+	for key, msg := range m {
+		err.Add(key, msg...)
+	}
+}

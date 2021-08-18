@@ -30,3 +30,18 @@ func TestMessages(t *testing.T) {
 	errs.Set("key1", "v1")
 	a.Equal(errs, map[string][]string{"key1": {"v1"}})
 }
+
+func TestMessages_Merge(t *testing.T) {
+	a := assert.New(t)
+
+	m1 := Messages{}
+	m1.Add("key1", "v1", "v2")
+
+	m2 := Messages{}
+	m2.Add("key1", "v2", "v3")
+	m2.Add("key2", "v1")
+
+	m1.Merge(m2)
+	a.Equal(m1["key1"], []string{"v1", "v2", "v2", "v3"})
+	a.Equal(m1["key2"], []string{"v1"})
+}
