@@ -31,10 +31,10 @@ type Rule struct {
 // IsValid 将当前函数作为 Validator 使用
 func (f ValidateFunc) IsValid(v interface{}) bool { return f(v) }
 
-// Rule 当前当前的验证函数转换为 Rule 实例
+// Message 当前当前的验证函数转换为 Rule 实例
 //
 // 参数作为翻译项，在出错时，按要求输出指定的本地化错误信息。
-func (f ValidateFunc) Rule(key message.Reference, v ...interface{}) *Rule {
+func (f ValidateFunc) Message(key message.Reference, v ...interface{}) *Rule {
 	return NewRule(f, key, v...)
 }
 

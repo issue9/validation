@@ -36,7 +36,7 @@ func newInValidator(not bool, element ...interface{}) *InValidator {
 	}
 }
 
-// Message 关联错误信息并返回 Rule 实例
+// Message 关联错误信息并返回 Message 实例
 func (in *InValidator) Message(key message.Reference, v ...interface{}) *validation.Rule {
 	return validation.NewRule(in, key, v...)
 }
