@@ -20,21 +20,21 @@ func TestRule_AsSlice(t *testing.T) {
 
 	// 将数组当普通元素处理
 	v := validation.New(validation.ContinueAtError, message.NewPrinter(language.SimplifiedChinese), "/").
-		NewField([]int{1, 2, 6}, "slice", validator.Min(5).Message("min-5"))
+		NewField([]int{1, 2, 6}, "slice", validator.Min(5).Rule("min-5"))
 	a.Equal(v.Messages(), validation.Messages{
 		"slice": []string{"min-5"},
 	})
 
 	// 普通元素指定为 asSlice
 	v = validation.New(validation.ContinueAtError, message.NewPrinter(language.SimplifiedChinese), "/").
-		NewField("123456", "slice", validator.Min(5).Message("min-5").AsSlice())
+		NewField("123456", "slice", validator.Min(5).Rule("min-5").AsSlice())
 	a.Equal(v.Messages(), validation.Messages{
 		"slice": []string{"min-5"},
 	})
 
 	// ContinueAtError
 	v = validation.New(validation.ContinueAtError, message.NewPrinter(language.SimplifiedChinese), "/").
-		NewField([]int{1, 2, 6}, "slice", validator.Min(5).Message("min-5").AsSlice())
+		NewField([]int{1, 2, 6}, "slice", validator.Min(5).Rule("min-5").AsSlice())
 	a.Equal(v.Messages(), validation.Messages{
 		"slice[0]": []string{"min-5"},
 		"slice[1]": []string{"min-5"},
@@ -42,7 +42,7 @@ func TestRule_AsSlice(t *testing.T) {
 
 	// ExitAtError
 	v = validation.New(validation.ExitAtError, message.NewPrinter(language.SimplifiedChinese), "/").
-		NewField([]int{1, 2, 6}, "slice", validator.Min(5).Message("min-5").AsSlice())
+		NewField([]int{1, 2, 6}, "slice", validator.Min(5).Rule("min-5").AsSlice())
 	a.Equal(v.Messages(), validation.Messages{
 		"slice[0]": []string{"min-5"},
 	})

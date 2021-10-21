@@ -9,14 +9,10 @@ import (
 )
 
 // MinLength 声明判断内容长度不小于 min 的验证规则
-func MinLength(min int64) validation.ValidateFunc {
-	return Length(min, -1)
-}
+func MinLength(min int64) validation.ValidateFunc { return Length(min, -1) }
 
 // MaxLength 声明判断内容长度不大于 max 的验证规则
-func MaxLength(max int64) validation.ValidateFunc {
-	return Length(-1, max)
-}
+func MaxLength(max int64) validation.ValidateFunc { return Length(-1, max) }
 
 // Length 声明判断内容长度的验证规则
 //
@@ -28,7 +24,7 @@ func Length(min, max int64) validation.ValidateFunc {
 		panic("max 必须大于 min")
 	}
 
-	return validation.ValidateFunc(func(v interface{}) bool {
+	return func(v interface{}) bool {
 		if min < 0 && max < 0 {
 			return true
 		}
@@ -54,5 +50,5 @@ func Length(min, max int64) validation.ValidateFunc {
 			return l >= min
 		}
 		return l >= min && l <= max
-	})
+	}
 }

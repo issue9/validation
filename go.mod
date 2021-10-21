@@ -1,6 +1,6 @@
 module github.com/issue9/validation
 
-go 1.13
+go 1.14
 
 require (
 	github.com/issue9/assert v1.4.1

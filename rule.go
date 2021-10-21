@@ -11,14 +11,14 @@ import (
 
 // Validator 用于验证指定数据的合法性
 type Validator interface {
-	// 验证 v 是否符合当前的规则
+	// IsValid 验证 v 是否符合当前的规则
 	IsValid(v interface{}) bool
 }
 
 // ValidateFunc 用于验证指定数据的合法性
 type ValidateFunc func(interface{}) bool
 
-// Rule 验证规则需要实现的接口
+// Rule 验证规则
 type Rule struct {
 	validator Validator
 	asSlice   bool
@@ -29,14 +29,12 @@ type Rule struct {
 }
 
 // IsValid 将当前函数作为 Validator 使用
-func (f ValidateFunc) IsValid(v interface{}) bool {
-	return f(v)
-}
+func (f ValidateFunc) IsValid(v interface{}) bool { return f(v) }
 
-// Message 当前当前的验证函数转换为 Rule 实例
+// Rule 当前当前的验证函数转换为 Rule 实例
 //
 // 参数作为翻译项，在出错时，按要求输出指定的本地化错误信息。
-func (f ValidateFunc) Message(key message.Reference, v ...interface{}) *Rule {
+func (f ValidateFunc) Rule(key message.Reference, v ...interface{}) *Rule {
 	return NewRule(f, key, v...)
 }
 

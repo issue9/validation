@@ -21,7 +21,7 @@ type objectWithoutFieldValidator struct {
 }
 
 func (obj *object) ValidateFields(v *validation.Validation) {
-	v.NewField(obj.Age, "age", Min(18).Message("不能小于 18"))
+	v.NewField(obj.Age, "age", Min(18).Rule("不能小于 18"))
 }
 
 func TestIn(t *testing.T) {

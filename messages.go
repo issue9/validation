@@ -8,26 +8,26 @@ package validation
 type Messages map[string][]string
 
 // Add 为查询参数 key 添加一条新的错误信息
-func (err Messages) Add(key string, val ...string) {
+func (msg Messages) Add(key string, val ...string) {
 	if len(val) == 0 {
 		panic("参数 val 必须指定")
 	}
 
-	err[key] = append(err[key], val...)
+	msg[key] = append(msg[key], val...)
 }
 
 // Set 将查询参数 key 的错误信息改为 val
-func (err Messages) Set(key string, val ...string) {
+func (msg Messages) Set(key string, val ...string) {
 	if len(val) == 0 {
 		panic("参数 val 必须指定")
 	}
 
-	err[key] = val
+	msg[key] = val
 }
 
 // Merge 将另一个 Messages 内容合并到当前实例
-func (err Messages) Merge(m Messages) {
-	for key, msg := range m {
-		err.Add(key, msg...)
+func (msg Messages) Merge(m Messages) {
+	for key, mm := range m {
+		msg.Add(key, mm...)
 	}
 }

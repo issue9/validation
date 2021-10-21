@@ -19,7 +19,7 @@ func Range(min, max float64) validation.ValidateFunc {
 		panic("max 必须大于等于 min")
 	}
 
-	return validation.ValidateFunc(func(v interface{}) bool {
+	return func(v interface{}) bool {
 		var val float64
 		switch v.(type) {
 		case int, int8, int16, int32, int64:
@@ -33,15 +33,11 @@ func Range(min, max float64) validation.ValidateFunc {
 		}
 
 		return val >= min && val <= max
-	})
+	}
 }
 
 // Min 声明判断数值不小于 min 的验证规则
-func Min(min float64) validation.ValidateFunc {
-	return Range(min, math.Inf(1))
-}
+func Min(min float64) validation.ValidateFunc { return Range(min, math.Inf(1)) }
 
 // Max 声明判断数值不大于 max 的验证规则
-func Max(max float64) validation.ValidateFunc {
-	return Range(math.Inf(-1), max)
-}
+func Max(max float64) validation.ValidateFunc { return Range(math.Inf(-1), max) }

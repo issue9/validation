@@ -94,6 +94,4 @@ func (v *Validation) joinName(name string) string {
 }
 
 // Messages 返回验证结果
-func (v *Validation) Messages() Messages {
-	return v.messages
-}
+func (v *Validation) Messages() Messages { return v.messages }
