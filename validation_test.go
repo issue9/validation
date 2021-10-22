@@ -129,8 +129,8 @@ func TestValidation_NewField(t *testing.T) {
 func TestValidation_Locale(t *testing.T) {
 	a := assert.New(t)
 	builder := catalog.NewBuilder()
-	builder.SetString(language.SimplifiedChinese, "lang", "chn")
-	builder.SetString(language.TraditionalChinese, "lang", "cht")
+	a.NotError(builder.SetString(language.SimplifiedChinese, "lang", "chn"))
+	a.NotError(builder.SetString(language.TraditionalChinese, "lang", "cht"))
 
 	v := validation.New(validation.ContinueAtError, message.NewPrinter(language.SimplifiedChinese, message.Catalog(builder)), "/").
 		NewField(5, "obj", validator.Max(4).Message("lang"))

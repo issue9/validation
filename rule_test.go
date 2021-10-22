@@ -13,7 +13,7 @@ import (
 	"github.com/issue9/validation/validator"
 )
 
-var _ validation.Validator = validation.ValidateFunc(validator.Max(100))
+var _ validation.Validator = validator.Max(100)
 
 func TestRule_AsSlice(t *testing.T) {
 	a := assert.New(t)
