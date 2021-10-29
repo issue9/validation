@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+
+package gb32100
+
+import (
+	"testing"
+
+	"github.com/issue9/assert"
+)
+
+func TestCodes(t *testing.T) {
+	a := assert.New(t)
+
+	a.Equal(31, len(codeIndexes))
+	a.Equal(17, len(factors))
+}
+
+func TestIsValid(t *testing.T) {
+	a := assert.New(t)
+
+	for i, item := range validData {
+		a.True(IsValid([]byte(item)), "failed @ %d:%s", i, item)
+	}
+}

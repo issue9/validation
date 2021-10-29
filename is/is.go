@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/issue9/validation/is/gb11643"
+	"github.com/issue9/validation/is/gb32100"
 	"github.com/issue9/validation/is/luhn"
 )
 
@@ -174,6 +175,19 @@ func GB11643(val interface{}) bool {
 		return gb11643.IsValid(v)
 	case []rune:
 		return gb11643.IsValid([]byte(string(v)))
+	default:
+		return false
+	}
+}
+
+func GB32100(val interface{}) bool {
+	switch v := val.(type) {
+	case string:
+		return gb32100.IsValid([]byte(v))
+	case []byte:
+		return gb32100.IsValid(v)
+	case []rune:
+		return gb32100.IsValid([]byte(string(v)))
 	default:
 		return false
 	}

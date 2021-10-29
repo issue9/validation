@@ -9,6 +9,7 @@ import (
 
 // is 包中的简单封闭
 var (
+	GB32100  = validation.ValidateFunc(is.GB32100)
 	GB11643  = validation.ValidateFunc(is.GB11643)
 	HexColor = validation.ValidateFunc(is.HexColor)
 	BankCard = validation.ValidateFunc(is.BankCard)
