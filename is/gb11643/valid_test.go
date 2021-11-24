@@ -6,7 +6,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 // 计算各个数值位对应的系数值。
@@ -21,11 +21,11 @@ func getWeight() []int {
 }
 
 func TestGetWeight(t *testing.T) {
-	assert.Equal(t, gb11643Weight, getWeight())
+	assert.New(t, false).Equal(gb11643Weight, getWeight())
 }
 
 func TestIsValid(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	// 网上扒来的身份证，不与现实中的对应。
 	a.True(IsValid([]byte("350303199002033073")))

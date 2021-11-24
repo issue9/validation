@@ -5,7 +5,7 @@ package validation_test
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"golang.org/x/text/message/catalog"
@@ -51,7 +51,7 @@ func (root *root1) ValidateFields(v *validation.Validation) {
 }
 
 func TestValidation_ErrorHandling(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	v := validation.New(validation.ContinueAtError, message.NewPrinter(language.Chinese), "/").
 		NewField(-100, "f1", validator.Min(-2).Message("-2"), validator.Min(-3).Message("-3")).
@@ -78,7 +78,7 @@ func TestValidation_ErrorHandling(t *testing.T) {
 }
 
 func TestValidation_NewField(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	obj := &object{}
 	v := validation.New(validation.ContinueAtError, message.NewPrinter(language.Chinese), "/").
@@ -127,7 +127,7 @@ func TestValidation_NewField(t *testing.T) {
 }
 
 func TestValidation_Locale(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	builder := catalog.NewBuilder()
 	a.NotError(builder.SetString(language.SimplifiedChinese, "lang", "chn"))
 	a.NotError(builder.SetString(language.TraditionalChinese, "lang", "cht"))

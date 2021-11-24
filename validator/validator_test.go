@@ -6,11 +6,11 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestMatch(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	r := Match(regexp.MustCompile("[a-z]+"))
 	a.True(r.IsValid("abc"))
@@ -20,7 +20,7 @@ func TestMatch(t *testing.T) {
 }
 
 func TestRequired(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	val := 5
 
 	r := Required(false)

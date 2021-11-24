@@ -5,11 +5,11 @@ package validator
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestLength(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.Panic(func() {
 		Length(500, 50)

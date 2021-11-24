@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestNumber(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(Number("123"))
 	a.True(Number("+123"))
@@ -37,7 +37,7 @@ func TestNumber(t *testing.T) {
 }
 
 func TestNil(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(Nil(nil))
 
@@ -57,7 +57,7 @@ func TestNil(t *testing.T) {
 }
 
 func TestEmpty(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(Empty(0, false))
 	a.True(Empty(nil, false))
@@ -126,7 +126,7 @@ func TestEmpty(t *testing.T) {
 }
 
 func TestZero(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(Zero(0, false))
 	a.True(Zero(nil, false))
@@ -195,7 +195,7 @@ func TestZero(t *testing.T) {
 }
 
 func TestHexColor(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(HexColor("#123"))
 	a.True(HexColor("#fff"))

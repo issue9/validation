@@ -5,11 +5,11 @@ package validation
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestMessages(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	errs := Messages{}
 
@@ -32,7 +32,7 @@ func TestMessages(t *testing.T) {
 }
 
 func TestMessages_Merge(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	m1 := Messages{}
 	m1.Add("key1", "v1", "v2")

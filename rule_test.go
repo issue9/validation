@@ -5,7 +5,7 @@ package validation_test
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 
@@ -16,7 +16,7 @@ import (
 var _ validation.Validator = validator.Max(100)
 
 func TestRule_AsSlice(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	// 将数组当普通元素处理
 	v := validation.New(validation.ContinueAtError, message.NewPrinter(language.SimplifiedChinese), "/").

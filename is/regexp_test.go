@@ -5,11 +5,11 @@ package is
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestCNPhone(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(CNPhone("444488888888-4444"))
 	a.True(CNPhone("3337777777-1"))
@@ -23,7 +23,7 @@ func TestCNPhone(t *testing.T) {
 }
 
 func TestCNMobile(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(CNMobile("15011111111"))
 	a.True(CNMobile("015011111111"))
@@ -40,7 +40,7 @@ func TestCNMobile(t *testing.T) {
 }
 
 func TestCNTel(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(CNTel("444488888888-4444"))
 	a.True(CNTel("3337777777-1"))
@@ -54,7 +54,7 @@ func TestCNTel(t *testing.T) {
 }
 
 func TestURL(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(URL("www.example.com"))
 	a.True(URL("http://www.example.com"))
@@ -77,7 +77,7 @@ func TestURL(t *testing.T) {
 }
 
 func TestIP(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(IP("fe80:0000:0000:0000:0204:61ff:fe9d:f156"))
 	a.True(IP("fe80:0:0:0:204:61ff:fe9d:f156"))
@@ -90,7 +90,7 @@ func TestIP(t *testing.T) {
 }
 
 func TestIP6(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(IP6("fe80:0000:0000:0000:0204:61ff:fe9d:f156"))      // full form of IPv6
 	a.True(IP6("fe80:0:0:0:204:61ff:fe9d:f156"))                // drop leading zeroes
@@ -104,7 +104,7 @@ func TestIP6(t *testing.T) {
 }
 
 func TestIP4(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(IP4("0.0.0.0"))
 	a.True(IP4("255.255.255.255"))
@@ -116,7 +116,7 @@ func TestIP4(t *testing.T) {
 }
 
 func TestEmail(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(Email("email@email.com"))
 	a.True(Email("em2il@email.com.cn"))

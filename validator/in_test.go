@@ -5,7 +5,7 @@ package validator
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/issue9/validation"
 )
@@ -25,7 +25,7 @@ func (obj *object) ValidateFields(v *validation.Validation) {
 }
 
 func TestIn(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	rule := In(1, 2, "3", struct{}{})
 	a.False(rule.IsValid(3))
@@ -42,7 +42,7 @@ func TestIn(t *testing.T) {
 }
 
 func TestNotIn(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	rule := NotIn(1, 2, "3", struct{}{})
 	a.True(rule.IsValid(3))

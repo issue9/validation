@@ -5,11 +5,11 @@ package is
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestEraseMinus(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.Equal(eraseMinus([]byte("abc-def-abc-")), []byte("abcdefabc"))
 	a.Equal(eraseMinus([]byte("abc-def-abc")), []byte("abcdefabc"))
@@ -18,7 +18,7 @@ func TestEraseMinus(t *testing.T) {
 }
 
 func TestISBN(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(ISBN("1-919876-03-0"))
 	a.True(ISBN("0-471-00084-1"))

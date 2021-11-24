@@ -5,7 +5,7 @@ package gb32100
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 var validData = []string{
@@ -16,7 +16,7 @@ var validData = []string{
 }
 
 func TestParse(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	g, err := Parse(validData[0])
 	a.NotError(err).NotNil(g)
