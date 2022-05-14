@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strconv"
 
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 )
 
@@ -22,10 +23,7 @@ type ValidateFunc func(interface{}) bool
 type Rule struct {
 	validator Validator
 	asSlice   bool
-
-	// 错误提示信息
-	key    message.Reference
-	values []interface{}
+	ls        localeutil.LocaleStringer
 }
 
 // IsValid 将当前函数作为 Validator 使用
@@ -42,8 +40,7 @@ func (f ValidateFunc) Message(key message.Reference, v ...interface{}) *Rule {
 func NewRule(validator Validator, key message.Reference, v ...interface{}) *Rule {
 	return &Rule{
 		validator: validator,
-		key:       key,
-		values:    v,
+		ls:        localeutil.Phrase(key, v...),
 	}
 }
 
@@ -60,7 +57,7 @@ func (rule *Rule) AsSlice() *Rule {
 }
 
 func (rule *Rule) message(p *message.Printer) string {
-	return p.Sprintf(rule.key, rule.values...)
+	return rule.ls.LocaleString(p)
 }
 
 func (rule *Rule) valid(v *Validation, name string, val interface{}) bool {

@@ -4,7 +4,6 @@ package validator
 
 import (
 	"math"
-	"reflect"
 
 	"github.com/issue9/validation"
 )
@@ -21,13 +20,31 @@ func Range(min, max float64) validation.ValidateFunc {
 
 	return func(v interface{}) bool {
 		var val float64
-		switch v.(type) {
-		case int, int8, int16, int32, int64:
-			val = float64(reflect.ValueOf(v).Int())
-		case uint, uint8, uint16, uint32, uint64:
-			val = float64(reflect.ValueOf(v).Uint())
-		case float32, float64:
-			val = reflect.ValueOf(v).Float()
+		switch vv := v.(type) {
+		case int:
+			val = float64(vv)
+		case int8:
+			val = float64(vv)
+		case int16:
+			val = float64(vv)
+		case int32:
+			val = float64(vv)
+		case int64:
+			val = float64(vv)
+		case uint:
+			val = float64(vv)
+		case uint8:
+			val = float64(vv)
+		case uint16:
+			val = float64(vv)
+		case uint32:
+			val = float64(vv)
+		case uint64:
+			val = float64(vv)
+		case float32:
+			val = float64(vv)
+		case float64:
+			val = vv
 		default:
 			return false
 		}

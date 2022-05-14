@@ -25,6 +25,8 @@ func (msg Messages) Set(key string, val ...string) {
 	msg[key] = val
 }
 
+func (msg Messages) Empty() bool { return len(msg) == 0 }
+
 // Merge 将另一个 Messages 内容合并到当前实例
 func (msg Messages) Merge(m Messages) {
 	for key, mm := range m {

@@ -7,7 +7,7 @@ import (
 	"github.com/issue9/validation/is"
 )
 
-// is 包中的简单封闭
+// 对 is 包中的简单封装
 var (
 	GB32100  = validation.ValidateFunc(is.GB32100)
 	GB11643  = validation.ValidateFunc(is.GB11643)

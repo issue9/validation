@@ -21,8 +21,11 @@ func TestMessages(t *testing.T) {
 		errs.Set("key")
 	})
 
+	a.True(errs.Empty())
+
 	errs.Add("key1", "v1", "v2")
 	a.Equal(errs, map[string][]string{"key1": {"v1", "v2"}})
+	a.False(errs.Empty())
 
 	errs.Add("key1", "v1", "v3")
 	a.Equal(errs, map[string][]string{"key1": {"v1", "v2", "v1", "v3"}})

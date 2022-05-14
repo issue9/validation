@@ -41,7 +41,7 @@ const (
 		`(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|` +
 		`(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))`
 
-		// 同时匹配 IP4 和 IP6
+	// 同时匹配 IP4 和 IP6
 	ipPattern = "(" + ip4Pattern + ")|(" + ip6Pattern + ")"
 
 	// 匹配域名
@@ -93,45 +93,29 @@ func Match(exp *regexp.Regexp, val interface{}) bool {
 //  0578-12345678-1234
 //  057812345678-1234
 // 若存在分机号，则分机号的连接符不能省略。
-func CNPhone(val interface{}) bool {
-	return Match(cnPhone, val)
-}
+func CNPhone(val interface{}) bool { return Match(cnPhone, val) }
 
 // CNMobile 验证中国大陆的手机号码
-func CNMobile(val interface{}) bool {
-	return Match(cnMobile, val)
-}
+func CNMobile(val interface{}) bool { return Match(cnMobile, val) }
 
 // CNTel 验证手机和电话类型
-func CNTel(val interface{}) bool {
-	return Match(cnTel, val)
-}
+func CNTel(val interface{}) bool { return Match(cnTel, val) }
 
-// URL 验证一个值是否标准的URL格式
+// URL 验证一个值是否标准的 URL 格式
 //
 // 支持 IP 和域名等格式
-func URL(val interface{}) bool {
-	return Match(url, val)
-}
+func URL(val interface{}) bool { return Match(url, val) }
 
 // IP 验证一个值是否为 IP
 //
 // 可验证 IP4 和 IP6
-func IP(val interface{}) bool {
-	return Match(ip, val)
-}
+func IP(val interface{}) bool { return Match(ip, val) }
 
 // IP6 验证一个值是否为 IP6
-func IP6(val interface{}) bool {
-	return Match(ip6, val)
-}
+func IP6(val interface{}) bool { return Match(ip6, val) }
 
 // IP4 验证一个值是滞为 IP4
-func IP4(val interface{}) bool {
-	return Match(ip4, val)
-}
+func IP4(val interface{}) bool { return Match(ip4, val) }
 
 // Email 验证一个值是否匹配一个邮箱
-func Email(val interface{}) bool {
-	return Match(email, val)
-}
+func Email(val interface{}) bool { return Match(email, val) }
