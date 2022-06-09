@@ -36,7 +36,7 @@ type Object {
 o := &Object{}
 
 p := message.NewPrinter(language.MustParse("cmn-Hans"))
-v := validation.New(validation.ContinueAtError, p, ".")
+v := validation.New(validation.ContinueAtError, p)
 messages := v.NewField(&o.Age, "age", validator.Min(18).Message("必须大于 18")).
     NewField(&o.Name, "name", validator.Required(false).Message("不能为空")).
     Messages()
@@ -67,7 +67,7 @@ builder.SetString(language.TraditionalChinese, "lang", "cht")
 o := &Object{}
 
 p := message.NewPrinter(language.SimplifiedChinese, message.Catalog(builder))
-v := validation.New(validation.ContinueAtError, p, ".")
+v := validation.New(validation.ContinueAtError, p)
 messages := v.NewField(&o.Age, "age", validator.Min(18).Message("lang")). // 根据 p 的不同，会输出不同内容
     NewField(&o.Name, "name", validator.Required(false).Message("不能为空")).
     Messages()
