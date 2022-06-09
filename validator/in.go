@@ -43,8 +43,7 @@ func (in *InValidator) Message(key message.Reference, v ...interface{}) *validat
 
 // IsValid 实现 validation.Validator
 func (in *InValidator) IsValid(v interface{}) bool {
-	isIn := sliceutil.Count(in.elements, func(i int) bool {
-		elem := in.elements[i]
+	isIn := sliceutil.Exists(in.elements, func(elem any) bool {
 		elemType := reflect.TypeOf(elem)
 
 		rv := reflect.ValueOf(v)
@@ -52,7 +51,7 @@ func (in *InValidator) IsValid(v interface{}) bool {
 			return true
 		}
 		return reflect.DeepEqual(v, elem)
-	}) > 0
+	})
 
 	return (!in.not && isIn) || (in.not && !isIn)
 }
