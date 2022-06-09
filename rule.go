@@ -69,6 +69,8 @@ func (rule *Rule) valid(v *Validation, name string, val any) bool {
 		return true
 	}
 
+	// 以下 rule.asSlice == true
+
 	rv := reflect.ValueOf(val)
 	if kind := rv.Kind(); kind != reflect.Array && kind != reflect.Slice {
 		ok := rule.validator.IsValid(val)

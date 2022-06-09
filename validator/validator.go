@@ -22,7 +22,7 @@ func Match(exp *regexp.Regexp) validation.ValidateFunc {
 // skipNil 表示当前值为指针时，如果指向 nil，是否跳过非空检测规则。
 // 如果 skipNil 为 false，则 nil 被当作空值处理。
 //
-// 具体判断规则可参考 github.com/issue9/is.Empty
+// 具体判断规则可参考 github.com/issue9/validation/is.Empty
 func Required(skipNil bool) validation.ValidateFunc {
 	return func(v any) bool {
 		if skipNil && v == nil {

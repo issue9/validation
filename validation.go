@@ -12,7 +12,6 @@ const (
 	ExitFieldAtError                      // 碰到错误中断当前字段的验证
 )
 
-// ErrorHandling 当验证出错时的处理方式
 type ErrorHandling int8
 
 // Validation 验证器

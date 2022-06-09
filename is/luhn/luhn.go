@@ -11,9 +11,7 @@
 package luhn
 
 // IsValid 传入 []byte 验证是否正确
-func IsValid(v []byte) bool {
-	return 0 == (checksum(v, false) % 10)
-}
+func IsValid(v []byte) bool { return 0 == (checksum(v, false) % 10) }
 
 // GenerateWithPrefix 给定前缀，添加最后一位校验位
 func GenerateWithPrefix(prefix []byte) []byte {
