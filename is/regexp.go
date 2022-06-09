@@ -74,7 +74,7 @@ func regexpCompile(str string) *regexp.Regexp {
 // Match 判断 val 是否能正确匹配 exp 中的正则表达式
 //
 // val 可以是[]byte, []rune, string类型。
-func Match(exp *regexp.Regexp, val interface{}) bool {
+func Match(exp *regexp.Regexp, val any) bool {
 	switch v := val.(type) {
 	case []rune:
 		return exp.MatchString(string(v))
@@ -93,29 +93,29 @@ func Match(exp *regexp.Regexp, val interface{}) bool {
 //  0578-12345678-1234
 //  057812345678-1234
 // 若存在分机号，则分机号的连接符不能省略。
-func CNPhone(val interface{}) bool { return Match(cnPhone, val) }
+func CNPhone(val any) bool { return Match(cnPhone, val) }
 
 // CNMobile 验证中国大陆的手机号码
-func CNMobile(val interface{}) bool { return Match(cnMobile, val) }
+func CNMobile(val any) bool { return Match(cnMobile, val) }
 
 // CNTel 验证手机和电话类型
-func CNTel(val interface{}) bool { return Match(cnTel, val) }
+func CNTel(val any) bool { return Match(cnTel, val) }
 
 // URL 验证一个值是否标准的 URL 格式
 //
 // 支持 IP 和域名等格式
-func URL(val interface{}) bool { return Match(url, val) }
+func URL(val any) bool { return Match(url, val) }
 
 // IP 验证一个值是否为 IP
 //
 // 可验证 IP4 和 IP6
-func IP(val interface{}) bool { return Match(ip, val) }
+func IP(val any) bool { return Match(ip, val) }
 
 // IP6 验证一个值是否为 IP6
-func IP6(val interface{}) bool { return Match(ip6, val) }
+func IP6(val any) bool { return Match(ip6, val) }
 
 // IP4 验证一个值是滞为 IP4
-func IP4(val interface{}) bool { return Match(ip4, val) }
+func IP4(val any) bool { return Match(ip4, val) }
 
 // Email 验证一个值是否匹配一个邮箱
-func Email(val interface{}) bool { return Match(email, val) }
+func Email(val any) bool { return Match(email, val) }

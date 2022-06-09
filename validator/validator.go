@@ -12,7 +12,7 @@ import (
 
 // Match 定义正则匹配的验证规则
 func Match(exp *regexp.Regexp) validation.ValidateFunc {
-	return func(v interface{}) bool {
+	return func(v any) bool {
 		return is.Match(exp, v)
 	}
 }
@@ -24,7 +24,7 @@ func Match(exp *regexp.Regexp) validation.ValidateFunc {
 //
 // 具体判断规则可参考 github.com/issue9/is.Empty
 func Required(skipNil bool) validation.ValidateFunc {
-	return func(v interface{}) bool {
+	return func(v any) bool {
 		if skipNil && v == nil {
 			return true
 		}

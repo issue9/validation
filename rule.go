@@ -13,11 +13,11 @@ import (
 // Validator 用于验证指定数据的合法性
 type Validator interface {
 	// IsValid 验证 v 是否符合当前的规则
-	IsValid(v interface{}) bool
+	IsValid(v any) bool
 }
 
 // ValidateFunc 用于验证指定数据的合法性
-type ValidateFunc func(interface{}) bool
+type ValidateFunc func(any) bool
 
 // Rule 验证规则
 type Rule struct {
@@ -27,17 +27,17 @@ type Rule struct {
 }
 
 // IsValid 将当前函数作为 Validator 使用
-func (f ValidateFunc) IsValid(v interface{}) bool { return f(v) }
+func (f ValidateFunc) IsValid(v any) bool { return f(v) }
 
-// Message 当前当前的验证函数转换为 Rule 实例
+// Message 当前的验证函数转换为 Rule 实例
 //
 // 参数作为翻译项，在出错时，按要求输出指定的本地化错误信息。
-func (f ValidateFunc) Message(key message.Reference, v ...interface{}) *Rule {
+func (f ValidateFunc) Message(key message.Reference, v ...any) *Rule {
 	return NewRule(f, key, v...)
 }
 
 // NewRule 返回 Rule 实例
-func NewRule(validator Validator, key message.Reference, v ...interface{}) *Rule {
+func NewRule(validator Validator, key message.Reference, v ...any) *Rule {
 	return &Rule{
 		validator: validator,
 		ls:        localeutil.Phrase(key, v...),
@@ -60,7 +60,7 @@ func (rule *Rule) message(p *message.Printer) string {
 	return rule.ls.LocaleString(p)
 }
 
-func (rule *Rule) valid(v *Validation, name string, val interface{}) bool {
+func (rule *Rule) valid(v *Validation, name string, val any) bool {
 	if !rule.asSlice {
 		if !rule.validator.IsValid(val) {
 			v.messages.Add(name, rule.message(v.p))

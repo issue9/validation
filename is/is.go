@@ -16,7 +16,7 @@ import (
 // Number 判断一个值是否可转换为数值
 //
 // NOTE: 不支持全角数值的判断
-func Number(val interface{}) bool {
+func Number(val any) bool {
 	switch v := val.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
 		return true
@@ -38,7 +38,7 @@ func Number(val interface{}) bool {
 //
 // 有类型但无具体值的也将返回 true，
 // 当特定类型的变量，已经声明，但还未赋值时，也将返回 true
-func Nil(val interface{}) bool {
+func Nil(val any) bool {
 	if nil == val {
 		return true
 	}
@@ -54,7 +54,7 @@ func Nil(val interface{}) bool {
 //
 // 若是容器类型，长度为 0 也将返回 true，
 // 但是 []string{""}空数组里套一个空字符串，不会被判断为空。
-func Empty(val interface{}, ptr bool) bool {
+func Empty(val any, ptr bool) bool {
 	if val == nil {
 		return true
 	}
@@ -81,7 +81,7 @@ func Empty(val interface{}, ptr bool) bool {
 //
 // ptr 表示当 val 是指针时，是否分析指向的值。
 // 在 reflect.Value.IsZero 的基础上对特写类型作为特殊处理，比如 time.IsZero()
-func Zero(val interface{}, ptr bool) bool {
+func Zero(val any, ptr bool) bool {
 	if val == nil {
 		return true
 	}
@@ -115,7 +115,7 @@ func zero(v reflect.Value) bool {
 }
 
 // HexColor 判断一个字符串是否为合法的 16 进制颜色表示法
-func HexColor(val interface{}) bool {
+func HexColor(val any) bool {
 	var bs []byte
 	switch v := val.(type) {
 	case []byte:
@@ -149,7 +149,7 @@ func HexColor(val interface{}) bool {
 }
 
 // BankCard 是否为正确的银行卡号
-func BankCard(val interface{}) bool {
+func BankCard(val any) bool {
 	switch v := val.(type) {
 	case []byte:
 		return luhn.IsValid(v)
@@ -167,7 +167,7 @@ func BankCard(val interface{}) bool {
 // 若是 15 位则当作一代身份证，仅简单地判断各位是否都是数字；
 // 若是 18 位则当作二代身份证，会计算校验位是否正确；
 // 其它位数都返回 false。
-func GB11643(val interface{}) bool {
+func GB11643(val any) bool {
 	switch v := val.(type) {
 	case string:
 		return gb11643.IsValid([]byte(v))
@@ -180,7 +180,7 @@ func GB11643(val interface{}) bool {
 	}
 }
 
-func GB32100(val interface{}) bool {
+func GB32100(val any) bool {
 	switch v := val.(type) {
 	case string:
 		return gb32100.IsValid([]byte(v))

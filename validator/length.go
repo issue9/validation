@@ -24,7 +24,7 @@ func Length(min, max int64) validation.ValidateFunc {
 		panic("max 必须大于 min")
 	}
 
-	return func(v interface{}) bool {
+	return func(v any) bool {
 		if min < 0 && max < 0 {
 			return true
 		}

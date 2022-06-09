@@ -41,7 +41,7 @@ func TestNil(t *testing.T) {
 
 	a.True(Nil(nil))
 
-	var x interface{}
+	var x any
 	a.True(Nil(x))
 
 	var y *bytes.Buffer
@@ -65,7 +65,7 @@ func TestEmpty(t *testing.T) {
 	a.True(Empty(0.0, false))
 	a.False(Empty(-0.0001, true))
 
-	var i interface{}
+	var i any
 	a.True(Empty(i, false))
 	a.True(Empty(i, true))
 	a.False(Empty(&i, false))
@@ -87,7 +87,7 @@ func TestEmpty(t *testing.T) {
 	a.False(Empty(x, false))
 	a.False(Empty(x, true))
 
-	var ii interface{} = []string{}
+	var ii any = []string{}
 	a.True(Empty(ii, false))
 	a.True(Empty(ii, true))
 	a.False(Empty(&ii, false))
@@ -134,7 +134,7 @@ func TestZero(t *testing.T) {
 	a.True(Zero(0.0, false))
 	a.False(Zero(-0.0001, true))
 
-	var i interface{}
+	var i any
 	a.True(Zero(i, false))
 	a.True(Zero(i, true))
 	a.False(Zero(&i, false))
@@ -156,7 +156,7 @@ func TestZero(t *testing.T) {
 	a.False(Zero(x, false))
 	a.False(Zero(x, true))
 
-	var ii interface{} = []string{}
+	var ii any = []string{}
 	a.False(Zero(ii, false))
 	a.False(Zero(ii, true))
 	a.False(Zero(&ii, false))

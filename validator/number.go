@@ -18,7 +18,7 @@ func Range(min, max float64) validation.ValidateFunc {
 		panic("max 必须大于等于 min")
 	}
 
-	return func(v interface{}) bool {
+	return func(v any) bool {
 		var val float64
 		switch vv := v.(type) {
 		case int:
