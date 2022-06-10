@@ -23,7 +23,7 @@ type ValidateFunc func(any) bool
 type Rule struct {
 	validator Validator
 	asSlice   bool
-	ls        localeutil.LocaleStringer
+	message   localeutil.LocaleStringer
 }
 
 // IsValid 将当前函数作为 Validator 使用
@@ -40,7 +40,7 @@ func (f ValidateFunc) Message(key message.Reference, v ...any) *Rule {
 func NewRule(validator Validator, key message.Reference, v ...any) *Rule {
 	return &Rule{
 		validator: validator,
-		ls:        localeutil.Phrase(key, v...),
+		message:   localeutil.Phrase(key, v...),
 	}
 }
 
@@ -56,14 +56,10 @@ func (rule *Rule) AsSlice() *Rule {
 	return rule
 }
 
-func (rule *Rule) message(p *message.Printer) string {
-	return rule.ls.LocaleString(p)
-}
-
 func (rule *Rule) valid(v *Validation, name string, val any) bool {
 	if !rule.asSlice {
 		if !rule.validator.IsValid(val) {
-			v.messages.Add(name, rule.message(v.p))
+			v.messages.Add(name, rule.message)
 			return false
 		}
 		return true
@@ -75,7 +71,7 @@ func (rule *Rule) valid(v *Validation, name string, val any) bool {
 	if kind := rv.Kind(); kind != reflect.Array && kind != reflect.Slice {
 		ok := rule.validator.IsValid(val)
 		if !ok {
-			v.messages.Add(name, rule.message(v.p))
+			v.messages.Add(name, rule.message)
 		}
 		return ok
 	}
@@ -83,7 +79,7 @@ func (rule *Rule) valid(v *Validation, name string, val any) bool {
 	var sliceHasError bool
 	for i := 0; i < rv.Len(); i++ {
 		if !rule.validator.IsValid(rv.Index(i).Interface()) {
-			v.messages.Add(name+"["+strconv.Itoa(i)+"]", rule.message(v.p))
+			v.messages.Add(name+"["+strconv.Itoa(i)+"]", rule.message)
 			sliceHasError = true
 
 			if v.errHandling != ContinueAtError {

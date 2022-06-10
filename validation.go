@@ -18,15 +18,13 @@ type ErrorHandling int8
 type Validation struct {
 	errHandling ErrorHandling
 	messages    Messages
-	p           *message.Printer
 }
 
 // New 返回 Validation 对象
-func New(errHandling ErrorHandling, p *message.Printer) *Validation {
+func New(errHandling ErrorHandling, cap int) *Validation {
 	return &Validation{
 		errHandling: errHandling,
-		messages:    Messages{},
-		p:           p,
+		messages:    make(Messages, cap),
 	}
 }
 
@@ -51,3 +49,6 @@ func (v *Validation) NewField(val any, name string, rules ...*Rule) *Validation 
 
 // Messages 返回验证结果
 func (v *Validation) Messages() Messages { return v.messages }
+
+// LocaleMessages 返回本地化的验证结果
+func (v *Validation) LocaleMessages(p *message.Printer) LocaleMessages { return Locale(v.messages, p) }

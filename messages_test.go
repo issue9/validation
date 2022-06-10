@@ -8,10 +8,10 @@ import (
 	"github.com/issue9/assert/v2"
 )
 
-func TestMessages(t *testing.T) {
+func TestLocaleMessages(t *testing.T) {
 	a := assert.New(t, false)
 
-	errs := Messages{}
+	errs := LocaleMessages{}
 
 	a.Panic(func() {
 		errs.Add("key")
@@ -34,13 +34,13 @@ func TestMessages(t *testing.T) {
 	a.Equal(errs, map[string][]string{"key1": {"v1"}})
 }
 
-func TestMessages_Merge(t *testing.T) {
+func TestLocaleMessages_Merge(t *testing.T) {
 	a := assert.New(t, false)
 
-	m1 := Messages{}
+	m1 := LocaleMessages{}
 	m1.Add("key1", "v1", "v2")
 
-	m2 := Messages{}
+	m2 := LocaleMessages{}
 	m2.Add("key1", "v2", "v3")
 	m2.Add("key2", "v1")
 
