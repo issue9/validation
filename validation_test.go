@@ -65,7 +65,7 @@ func TestValidation_NewField(t *testing.T) {
 
 	obj := &object{}
 	v := validation.New(validation.ContinueAtError, 1).
-		NewField(obj, "obj/age", validator.Min(18).Message("不能小于 18"))
+		NewField(obj.Age, "obj/age", validator.Min(18).Message("不能小于 18"))
 	a.Equal(v.LocaleMessages(p), validation.LocaleMessages{
 		"obj/age": {"不能小于 18"},
 	})
@@ -108,6 +108,32 @@ func TestValidation_NewField(t *testing.T) {
 	a.Equal(messages, validation.LocaleMessages{
 		"slice[0]": []string{"min-5"},
 		"slice[1]": []string{"min-5"},
+	})
+}
+
+func TestValidation_When(t *testing.T) {
+	a := assert.New(t, false)
+	p := message.NewPrinter(language.Chinese)
+
+	obj := &object{}
+	v := validation.New(validation.ContinueAtError, 1).
+		NewField(obj, "obj/age", validator.Min(18).Message("不能小于 18")).
+		When(obj.Age > 0, func(v *validation.Validation) {
+			v.NewField(obj.Name, "obj/name", validator.Min(18).Message("不能为空"))
+		})
+	a.Equal(v.LocaleMessages(p), validation.LocaleMessages{
+		"obj/age": {"不能小于 18"},
+	})
+
+	obj = &object{Age: 15}
+	v = validation.New(validation.ContinueAtError, 1).
+		NewField(obj, "obj/age", validator.Min(18).Message("不能小于 18")).
+		When(obj.Age > 0, func(v *validation.Validation) {
+			v.NewField(obj.Name, "obj/name", validator.Min(18).Message("不能为空"))
+		})
+	a.Equal(v.LocaleMessages(p), validation.LocaleMessages{
+		"obj/age":  {"不能小于 18"},
+		"obj/name": {"不能为空"},
 	})
 }
 

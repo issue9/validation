@@ -14,13 +14,14 @@ const (
 
 type ErrorHandling int8
 
-// Validation 验证器
 type Validation struct {
 	errHandling ErrorHandling
 	messages    Messages
 }
 
 // New 返回 Validation 对象
+//
+// cap 表示初始的 Messages 容量大小；
 func New(errHandling ErrorHandling, cap int) *Validation {
 	return &Validation{
 		errHandling: errHandling,
@@ -43,6 +44,16 @@ func (v *Validation) NewField(val any, name string, rules ...*Rule) *Validation 
 		if !rule.valid(v, name, val) && v.errHandling != ContinueAtError {
 			return v
 		}
+	}
+	return v
+}
+
+// When 只有满足 cond 才执行 f 中的验证
+//
+// f 中的 v 即为当前对象；
+func (v *Validation) When(cond bool, f func(v *Validation)) *Validation {
+	if cond {
+		f(v)
 	}
 	return v
 }
