@@ -3,13 +3,21 @@
 // Package validation 数据验证
 package validation
 
-import "golang.org/x/text/message"
+import (
+	"reflect"
+	"strconv"
+
+	"github.com/issue9/localeutil"
+	"golang.org/x/text/message"
+
+	"github.com/issue9/validation/validator"
+)
 
 // 当验证出错时的几种可用处理方式
 const (
 	ContinueAtError  ErrorHandling = iota // 碰到错误不中断验证
 	ExitAtError                           // 碰到错误中断验证
-	ExitFieldAtError                      // 碰到错误中断当前字段的验证
+	ExitFieldAtError                      // 碰到错误中断当前字段的其它规则验证
 )
 
 type (
@@ -20,24 +28,24 @@ type (
 		messages    Messages
 	}
 
-	// Validator 用于验证指定数据的合法性
-	Validator interface {
-		// IsValid 验证 v 是否符合当前的规则
-		IsValid(v any) bool
-	}
+	Validator = validator.Validator
 
-	// ValidateFunc 用于验证指定数据的合法性
-	ValidateFunc func(any) bool
+	ValidateFunc = validator.ValidateFunc
+
+	// Rule 验证规则
+	//
+	// 这是对 Validator 的二次包装，保存着未本地化的错误信息，用以在验证失败之后返回给 Validation。
+	Rule struct {
+		validator Validator
+		message   localeutil.LocaleStringer
+	}
 )
 
-// IsValid 将当前函数作为 Validator 使用
-func (f ValidateFunc) IsValid(v any) bool { return f(v) }
-
-// Message 当前的验证函数转换为 Rule 实例
-//
-// 参数作为翻译项，在出错时，按要求输出指定的本地化错误信息。
-func (f ValidateFunc) Message(key message.Reference, v ...any) *Rule {
-	return NewRule(f, key, v...)
+func NewRule(validator Validator, key message.Reference, v ...any) *Rule {
+	return &Rule{
+		validator: validator,
+		message:   localeutil.Phrase(key, v...),
+	}
 }
 
 // New 返回 Validation 对象
@@ -62,10 +70,83 @@ func (v *Validation) NewField(val any, name string, rules ...*Rule) *Validation 
 	}
 
 	for _, rule := range rules {
-		if !rule.valid(v, name, val) && v.errHandling != ContinueAtError {
-			return v
+		if rule.validator.IsValid(val) {
+			continue
+		}
+
+		v.messages.Add(name, rule.message)
+		if v.errHandling != ContinueAtError {
+			break
 		}
 	}
+	return v
+}
+
+// NewSliceField 验证数组字段
+//
+// 如果字段类型不是数组或是字符串，将直接返回错误。
+func (v *Validation) NewSliceField(val any, name string, rules ...*Rule) *Validation {
+	// TODO: 如果 go 支持泛型方法，那么可以将 val 固定在 []T
+
+	rv := reflect.ValueOf(val)
+
+	if kind := rv.Kind(); kind != reflect.Array && kind != reflect.Slice && kind != reflect.String {
+		if v.errHandling != ContinueAtError {
+			v.messages.Add(name, rules[0].message) // 非数组，取第一个规则的错误信息
+			return v
+		}
+		for _, rule := range rules {
+			v.messages.Add(name, rule.message)
+		}
+		return v
+	}
+
+	for i := 0; i < rv.Len(); i++ {
+		for _, rule := range rules {
+			if !rule.validator.IsValid(rv.Index(i).Interface()) {
+				v.messages.Add(name+"["+strconv.Itoa(i)+"]", rule.message)
+				if v.errHandling != ContinueAtError {
+					return v
+				}
+			}
+		}
+	}
+
+	return v
+}
+
+// NewMapField 验证 map 字段
+//
+// 如果字段类型不是 map，将直接返回错误。
+func (v *Validation) NewMapField(val any, name string, rules ...*Rule) *Validation {
+	// TODO: 如果 go 支持泛型方法，那么可以将 val 固定在 map[T]T
+
+	rv := reflect.ValueOf(val)
+
+	if kind := rv.Kind(); kind != reflect.Map {
+		if v.errHandling != ContinueAtError {
+			v.messages.Add(name, rules[0].message) // 非数组，取第一个规则的错误信息
+			return v
+		}
+		for _, rule := range rules {
+			v.messages.Add(name, rule.message)
+		}
+		return v
+	}
+
+	keys := rv.MapKeys()
+	for i := 0; i < rv.Len(); i++ {
+		key := keys[i]
+		for _, rule := range rules {
+			if !rule.validator.IsValid(rv.MapIndex(key).Interface()) {
+				v.messages.Add(name+"["+key.String()+"]", rule.message)
+				if v.errHandling != ContinueAtError {
+					return v
+				}
+			}
+		}
+	}
+
 	return v
 }
 

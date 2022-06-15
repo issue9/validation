@@ -3,31 +3,38 @@
 // Package validator 提供各类验证器
 package validator
 
-import (
-	"regexp"
+type (
+	// Validator 用于验证指定数据的合法性
+	Validator interface {
+		// IsValid 验证 v 是否符合当前的规则
+		IsValid(v any) bool
+	}
 
-	"github.com/issue9/validation"
-	"github.com/issue9/validation/is"
+	// ValidateFunc 用于验证指定数据的合法性
+	ValidateFunc func(any) bool
 )
 
-// Match 定义正则匹配的验证规则
-func Match(exp *regexp.Regexp) validation.ValidateFunc {
-	return func(v any) bool {
-		return is.Match(exp, v)
-	}
+// IsValid 将当前函数作为 Validator 使用
+func (f ValidateFunc) IsValid(v any) bool { return f(v) }
+
+func And(v ...Validator) Validator {
+	return ValidateFunc(func(a any) bool {
+		for _, validator := range v {
+			if !validator.IsValid(a) {
+				return false
+			}
+		}
+		return true
+	})
 }
 
-// Required 判断值是否必须为非空的规则
-//
-// skipNil 表示当前值为指针时，如果指向 nil，是否跳过非空检测规则。
-// 如果 skipNil 为 false，则 nil 被当作空值处理。
-//
-// 具体判断规则可参考 github.com/issue9/validation/is.Empty
-func Required(skipNil bool) validation.ValidateFunc {
-	return func(v any) bool {
-		if skipNil && v == nil {
-			return true
+func Or(v ...Validator) Validator {
+	return ValidateFunc(func(a any) bool {
+		for _, validator := range v {
+			if validator.IsValid(a) {
+				return true
+			}
 		}
-		return !is.Empty(v, false)
-	}
+		return false
+	})
 }

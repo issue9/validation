@@ -3,39 +3,28 @@
 package validator
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/issue9/assert/v2"
 )
 
-func TestMatch(t *testing.T) {
+func TestAnd(t *testing.T) {
 	a := assert.New(t, false)
 
-	r := Match(regexp.MustCompile("[a-z]+"))
-	a.True(r.IsValid("abc"))
-	a.True(r.IsValid([]byte("def")))
-	a.False(r.IsValid([]rune("123")))
-	a.False(r.IsValid(123)) // 无法验证
+	v := And(In(1, 2, 3), NotIn(2, 3, 4))
+	a.True(v.IsValid(1))
+	a.False(v.IsValid(2))
+	a.False(v.IsValid(-1))
+	a.False(v.IsValid(100))
 }
 
-func TestRequired(t *testing.T) {
+func TestOr(t *testing.T) {
 	a := assert.New(t, false)
-	val := 5
 
-	r := Required(false)
-	a.False(r.IsValid(0))
-	a.False(r.IsValid(nil))
-	a.False(r.IsValid(""))
-	a.False(r.IsValid([]string{}))
-	a.True(r.IsValid([]string{""}))
-	a.True(r.IsValid(&val))
-
-	r = Required(true)
-	a.False(r.IsValid(0))
-	a.True(r.IsValid(nil))
-	a.False(r.IsValid(""))
-	a.False(r.IsValid([]string{}))
-	a.True(r.IsValid([]string{""}))
-	a.True(r.IsValid(&val))
+	v := Or(In(1, 2, 3), NotIn(2, 3, 4))
+	a.True(v.IsValid(1))
+	a.True(v.IsValid(2))
+	a.False(v.IsValid(4))
+	a.True(v.IsValid(-1))
+	a.True(v.IsValid(100))
 }
