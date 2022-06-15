@@ -10,15 +10,6 @@ import (
 	"golang.org/x/text/message"
 )
 
-// Validator 用于验证指定数据的合法性
-type Validator interface {
-	// IsValid 验证 v 是否符合当前的规则
-	IsValid(v any) bool
-}
-
-// ValidateFunc 用于验证指定数据的合法性
-type ValidateFunc func(any) bool
-
 // Rule 验证规则
 type Rule struct {
 	validator Validator
@@ -26,14 +17,11 @@ type Rule struct {
 	message   localeutil.LocaleStringer
 }
 
-// IsValid 将当前函数作为 Validator 使用
-func (f ValidateFunc) IsValid(v any) bool { return f(v) }
-
-// Message 当前的验证函数转换为 Rule 实例
-//
-// 参数作为翻译项，在出错时，按要求输出指定的本地化错误信息。
-func (f ValidateFunc) Message(key message.Reference, v ...any) *Rule {
-	return NewRule(f, key, v...)
+// IfExpr 根据 if 条件选择不同的验证规则
+type IfExpr struct {
+	expr      bool
+	ifRules   []*Rule
+	elseRules []*Rule
 }
 
 // NewRule 返回 Rule 实例
@@ -88,4 +76,28 @@ func (rule *Rule) valid(v *Validation, name string, val any) bool {
 		}
 	}
 	return !sliceHasError
+}
+
+// If 返回 IfExpr 表达式
+func If(expr bool, rule ...*Rule) *IfExpr {
+	return &IfExpr{
+		expr:    expr,
+		ifRules: rule,
+	}
+}
+
+// Else 指定条件不成言的验证规则
+//
+// 调用多次，则以最后一次指定为准，如果最后一次为空，则取消 Else 的内容。
+func (expr *IfExpr) Else(rule ...*Rule) *IfExpr {
+	expr.elseRules = rule
+	return expr
+}
+
+// Rules 返回当前表达式最后使用的验证规则
+func (expr *IfExpr) Rules() []*Rule {
+	if expr.expr {
+		return expr.ifRules
+	}
+	return expr.elseRules
 }

@@ -49,3 +49,20 @@ func TestRule_AsSlice(t *testing.T) {
 		"slice[0]": []string{"min-5"},
 	})
 }
+
+func TestIfExpr(t *testing.T) {
+	a := assert.New(t, false)
+
+	count := 5
+	rules := validation.If(count == 0, validator.Min(5).Message("min-5")).Else(validator.Max(100).Message("max-100"), validator.Min(50).Message("min-50")).Rules()
+	a.Equal(2, len(rules))
+
+	// 第二次 Else 清空了之前的规则
+	count = 5
+	rules = validation.If(count == 0, validator.Min(5).Message("min-5")).Else(validator.Max(100).Message("max-100"), validator.Min(50).Message("min-50")).Else().Rules()
+	a.Equal(0, len(rules))
+
+	count = 0
+	rules = validation.If(count == 0, validator.Min(5).Message("min-5")).Else(validator.Max(100).Message("max-100"), validator.Min(50).Message("min-50")).Rules()
+	a.Equal(1, len(rules))
+}
