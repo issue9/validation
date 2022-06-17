@@ -124,6 +124,11 @@ func TestValidation_NewSliceField(t *testing.T) {
 	a.Equal(v.LocaleMessages(p), LocaleMessages{
 		"slice": []string{"min-5"},
 	})
+	v = New(ExitAtError, 10).
+		NewSliceField(123456, "slice", min5)
+	a.Equal(v.LocaleMessages(p), LocaleMessages{
+		"slice": []string{"min-5"},
+	})
 
 	// ContinueAtError
 	v = New(ContinueAtError, 10).
@@ -139,6 +144,45 @@ func TestValidation_NewSliceField(t *testing.T) {
 	a.Equal(v.LocaleMessages(p), LocaleMessages{
 		"slice[0]": []string{"min-5"},
 	})
+}
+
+func TestValidation_NewMapField(t *testing.T) {
+	a := assert.New(t, false)
+	p := message.NewPrinter(language.SimplifiedChinese)
+
+	min5 := NewRule(validator.Min(5), "min-5")
+
+	// 将数组当普通元素处理
+	v := New(ContinueAtError, 10).
+		NewField([]int{1, 2, 6}, "slice", min5)
+	a.Equal(v.Messages(), Messages{
+		"slice": []localeutil.LocaleStringer{localeutil.Phrase("min-5")},
+	})
+
+	// 普通元素指定为 slice
+	v = New(ContinueAtError, 10).
+		NewMapField(123456, "slice", min5)
+	a.Equal(v.LocaleMessages(p), LocaleMessages{
+		"slice": []string{"min-5"},
+	})
+	v = New(ExitAtError, 10).
+		NewMapField(123456, "slice", min5)
+	a.Equal(v.LocaleMessages(p), LocaleMessages{
+		"slice": []string{"min-5"},
+	})
+
+	// ContinueAtError
+	v = New(ContinueAtError, 10).
+		NewMapField(map[string]int{"0": 1, "2": 2, "6": 6}, "map", min5)
+	a.Equal(v.LocaleMessages(p), LocaleMessages{
+		"map[0]": []string{"min-5"},
+		"map[2]": []string{"min-5"},
+	})
+
+	// ExitAtError
+	v = New(ExitAtError, 10).
+		NewMapField(map[string]int{"0": 1, "2": 2, "6": 6}, "map", min5)
+	a.Length(v.LocaleMessages(p), 1) // map 顺序未定
 }
 
 func TestValidation_When(t *testing.T) {
